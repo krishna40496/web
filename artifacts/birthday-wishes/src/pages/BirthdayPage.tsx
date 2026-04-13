@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles, Star, Moon, Sun, Wind, Music, Coffee, Book } from 'lucide-react';
+import CakeSection from '@/components/CakeSection';
 
 const Particles = () => {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
@@ -250,97 +251,28 @@ export default function BirthdayPage() {
         </FadeIn>
       </section>
 
-      {/* 6. Interactive Wish Section */}
+      {/* 6. Interactive Cake & Wish Section */}
       <Section>
         <div className="text-center">
           <FadeIn>
-            <h2 className="font-serif text-6xl md:text-8xl text-accent mb-8">
+            <h2 className="font-serif text-6xl md:text-8xl text-accent mb-6">
               Make a wish
             </h2>
-            <p className="text-2xl font-light text-foreground/80 mb-20">
-              Close your eyes. Think of something you truly want.
+            <p className="text-xl md:text-2xl font-light text-foreground/70 mb-16">
+              Close your eyes. Hold the moment. Then let it go.
             </p>
           </FadeIn>
 
-          <AnimatePresence mode="wait">
-            {!wishMade ? (
-              <motion.div
-                key="candles"
-                exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                transition={{ duration: 1 }}
-              >
-                <div className="flex justify-center gap-12 mb-16">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="relative cursor-pointer group" onClick={() => setCandlesBlown(true)}>
-                      <div className="w-6 h-32 bg-gradient-to-b from-primary/80 to-primary/20 rounded-t-md mx-auto relative overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
-                        <div className="absolute inset-0 bg-white/5 w-full h-full transform -skew-x-12" />
-                      </div>
-                      {/* Flame */}
-                      <AnimatePresence>
-                        {!candlesBlown && (
-                          <motion.div
-                            exit={{ opacity: 0, scale: 0, y: -20 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="absolute -top-14 left-1/2 -translate-x-1/2 w-8 h-16"
-                          >
-                            <motion.div
-                              animate={{
-                                scale: [1, 1.15, 0.9, 1.1, 1],
-                                x: [0, 3, -3, 1, 0],
-                                rotate: [0, 8, -8, 3, 0]
-                              }}
-                              transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: i * 0.3
-                              }}
-                              className="w-full h-full bg-gradient-to-t from-white via-yellow-200 to-accent/0 rounded-[50%_50%_50%_50%_/_60%_60%_40%_40%] blur-[2px] shadow-[0_0_30px_rgba(251,191,36,0.9)] mix-blend-screen"
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ))}
-                </div>
-                
-                <FadeIn delay={0.5}>
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(235,145,175,0.4)" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      setCandlesBlown(true);
-                      setTimeout(() => setWishMade(true), 1500);
-                    }}
-                    className="px-10 py-5 rounded-full border border-primary/50 bg-primary/10 text-primary hover:bg-primary/20 transition-all font-serif text-3xl tracking-wide backdrop-blur-md"
-                  >
-                    Blow out candles
-                  </motion.button>
-                </FadeIn>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="wish-granted"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.5, delay: 0.5 }}
-                className="space-y-8"
-              >
-                <motion.div
-                  animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-                  transition={{ rotate: { duration: 20, repeat: Infinity, ease: "linear" }, scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-                  className="inline-block"
-                >
-                  <Star className="w-20 h-20 text-accent mx-auto filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]" />
-                </motion.div>
-                <h3 className="font-serif text-5xl md:text-6xl text-primary drop-shadow-md">May it come true.</h3>
-                <p className="text-xl md:text-2xl font-light text-foreground/70 max-w-2xl mx-auto leading-relaxed">
-                  And may this year bring you closer to everything you dream of, 
-                  wrapped in moments that take your breath away.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="flex flex-col items-center">
+            <CakeSection
+              wishMade={wishMade}
+              candlesBlown={candlesBlown}
+              onBlowCandles={() => {
+                setCandlesBlown(true);
+                setTimeout(() => setWishMade(true), 2200);
+              }}
+            />
+          </div>
         </div>
       </Section>
 
