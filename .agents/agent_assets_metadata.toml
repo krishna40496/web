@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "c0GG_V-Buxzc0wmUcRVDw"
+uri = "file://artifacts/birthday-wishes/public/cake.png"
+type = "image"
+title = "glowing birthday cake"
+
+[[generated]]
+id = "5k5CoITud3Dmj-2J8U81h"
+uri = "file://artifacts/birthday-wishes/public/celebration.png"
+type = "image"
+title = "warm celebration lights"
