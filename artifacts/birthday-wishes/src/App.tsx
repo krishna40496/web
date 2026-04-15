@@ -4,13 +4,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import BirthdayPage from "@/pages/BirthdayPage";
+import LandingPage from "@/pages/LandingPage";
 
 const queryClient = new QueryClient();
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={BirthdayPage} />
+      <Route path="/" component={LandingPage} />
+      <Route path="/birthday" component={BirthdayPage} />
       <Route component={NotFound} />
     </Switch>
   );

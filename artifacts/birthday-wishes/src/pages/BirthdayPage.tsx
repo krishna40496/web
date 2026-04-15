@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles, Star, Moon, Sun, Wind, Music, Coffee, Book } from 'lucide-react';
+import { Heart, Sparkles, Star, Moon, Music, Coffee, Book } from 'lucide-react';
 import CakeSection from '@/components/CakeSection';
+import ChandelierHero from '@/components/ChandelierHero';
 
 const Particles = () => {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
@@ -80,163 +81,123 @@ export default function BirthdayPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
       <Particles />
       
-      {/* 1. Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 pb-32 px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img src="/celebration.png" alt="Celebration" className="w-full h-full object-cover opacity-20 mix-blend-screen" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
-        </div>
-        <motion.div 
-          style={{ opacity, scale }}
-          className="relative z-10 text-center max-w-4xl mx-auto"
+      {/* 1. Chandelier Hero Section (Replaces Old Hero) */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020617]">
+        <ChandelierHero name="Gopiha" />
+        
+        {/* Ambient Glows */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 6 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center text-primary/40 gap-4"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-            className="mb-8"
-          >
-            <Sparkles className="text-accent w-12 h-12 mx-auto opacity-80" />
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-7xl md:text-9xl text-primary drop-shadow-[0_0_30px_rgba(235,145,175,0.4)] mb-8 leading-tight py-4"
-          >
-            Happy Birthday
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 1.5 }}
-            className="text-xl md:text-3xl font-light tracking-widest text-foreground/90 max-w-2xl mx-auto"
-          >
-            A moment in time, entirely for you.
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 3 }}
-            className="absolute bottom-[-150px] left-1/2 -translate-x-1/2 flex flex-col items-center text-primary/50"
-          >
-            <span className="text-sm tracking-[0.3em] mb-4 font-sans uppercase">scroll</span>
-            <motion.div 
-              animate={{ y: [0, 10, 0] }} 
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-px h-24 bg-gradient-to-b from-primary/80 to-transparent" 
-            />
-          </motion.div>
+          <span className="text-xs tracking-[0.4em] uppercase font-light">Continue the Journey</span>
+          <motion.div 
+            animate={{ y: [0, 8, 0] }} 
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="w-px h-12 bg-gradient-to-b from-primary/60 to-transparent" 
+          />
         </motion.div>
       </section>
 
-      {/* 2. The Glow Section */}
-      <Section className="bg-gradient-to-b from-transparent to-card/20">
-        <div className="text-center">
-          <FadeIn>
-            <h2 className="font-serif text-5xl md:text-7xl text-accent mb-12">
-              Another year of light
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.3}>
-            <p className="text-xl md:text-2xl leading-relaxed font-light text-foreground/80 mb-8 max-w-2xl mx-auto">
-              You have a way of making everything around you just a little bit brighter. 
-              The world is softer, warmer, and infinitely more beautiful with you in it.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.6}>
-            <p className="text-xl md:text-2xl leading-relaxed font-light text-foreground/80 max-w-2xl mx-auto">
-              Today isn't just about getting older. It's about celebrating the unique, 
-              irreplaceable glow you bring to the lives of everyone lucky enough to know you.
-            </p>
-          </FadeIn>
-        </div>
-      </Section>
 
-      {/* 3. Milestone / Memory Timeline */}
-      <Section>
-        <div className="relative">
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-primary/20" />
+      {/* 3. Memory Lane Section (Replaces Timeline) */}
+      <Section className="overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-24">
           
-          {[
-            { year: "The Beginning", text: "When you first opened your eyes, the world gained a beautiful soul." },
-            { year: "The Journey", text: "Every step, every stumble, every triumph has shaped the incredible person you are today." },
-            { year: "The Now", text: "Standing here, radiating warmth and grace. You are exactly where you are meant to be." }
-          ].map((item, i) => (
-            <div key={i} className={`relative flex items-center mb-32 last:mb-0 ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+          {/* Memory Lane: Personalized Polaroid Collage */}
+          <div className="relative w-full md:w-1/2 h-[600px] md:h-[800px] flex items-center justify-center">
+            {[
+              { src: "/pics/memory-1.jpeg", rot: -15, x: -90, y: -100, scale: 1 },
+              { src: "/pics/memory-2.jpeg", rot: 12, x: 80, y: -120, scale: 1.05 },
+              { src: "/pics/memory-3.jpeg", rot: -8, x: -70, y: 100, scale: 1.1 },
+              { src: "/pics/memory-4.jpeg", rot: 18, x: 90, y: 80, scale: 0.95 },
+              { src: "/pics/memory-5.jpeg", rot: -2, x: 0, y: 0, scale: 1.25, isFront: true },
+            ].map((img, i) => (
               <motion.div
-                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-10%" }}
-                transition={{ duration: 1 }}
-                className={`w-1/2 ${i % 2 === 0 ? 'pr-12 text-right' : 'pl-12 text-left'}`}
-              >
-                <div className="font-serif text-3xl md:text-4xl text-primary mb-4">{item.year}</div>
-                <div className="text-lg font-light text-foreground/70 leading-relaxed">{item.text}</div>
-              </motion.div>
-              <motion.div 
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
+                key={i}
+                drag
+                dragConstraints={{ left: -150, right: 150, top: -200, bottom: 200 }}
+                dragElastic={0.25}
+                initial={{ opacity: 0, scale: 0.4, x: img.x * 2.5, y: img.y * 2.5, rotate: img.rot * 3 }}
+                whileInView={{ opacity: 1, scale: img.scale || 1, x: img.x, y: img.y, rotate: img.rot }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent shadow-[0_0_15px_rgba(251,191,36,0.6)]" 
-              />
-            </div>
-          ))}
-        </div>
-      </Section>
+                transition={{ 
+                  duration: 1.5, 
+                  delay: i * 0.15, 
+                  type: 'spring', 
+                  damping: 18, 
+                  stiffness: 70 
+                }}
+                whileHover={{ 
+                  scale: 1.15, 
+                  rotate: 0, 
+                  zIndex: 100, 
+                  boxShadow: '0 30px 60px rgba(0,0,0,0.5)',
+                  transition: { duration: 0.3 } 
+                }}
+                whileTap={{ scale: 0.95, zIndex: 100 }}
+                className="absolute p-3 pb-10 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] border border-white/20 cursor-grab active:cursor-grabbing group overflow-hidden"
+                style={{ 
+                  zIndex: img.isFront ? 10 : i + 1,
+                  width: 'min(260px, 60%)',
+                }}
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100/50 mb-3">
+                  <img 
+                    src={img.src} 
+                    alt={`Memory ${i}`} 
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 bg-primary/5 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="flex justify-center items-center opacity-20">
+                  <div className="w-8 h-1 bg-gray-300 rounded-full" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-      {/* 4. Heartfelt Gallery / Reasons */}
-      <Section className="bg-card/30 rounded-3xl mx-4 my-12 backdrop-blur-sm border border-primary/10">
-        <FadeIn>
-          <h2 className="font-serif text-5xl md:text-7xl text-center text-primary mb-24">
-            Things that make you, you
-          </h2>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
-          {[
-            {
-              title: "Your Warmth",
-              desc: "How you always know exactly what to say to make people feel heard, seen, and deeply understood.",
-              icon: Sun
-            },
-            {
-              title: "Your Resilience",
-              desc: "The quiet, graceful strength you carry through every season of life.",
-              icon: Wind
-            },
-            {
-              title: "Your Spirit",
-              desc: "That incredible energy that turns ordinary moments into memories we'll cherish forever.",
-              icon: Star
-            },
-            {
-              title: "Your Heart",
-              desc: "The boundless capacity you have to love and care for others.",
-              icon: Heart
-            }
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 0.8, delay: i * 0.2 }}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="w-20 h-20 rounded-full bg-background flex items-center justify-center mb-8 shadow-lg shadow-primary/5 group-hover:shadow-primary/30 group-hover:scale-110 transition-all duration-500 border border-primary/20">
-                <item.icon className="w-10 h-10 text-accent" />
+          {/* Right Side: Emotional Text */}
+          <div className="w-full md:w-1/2 text-center md:text-left md:pl-20">
+            <FadeIn>
+              <h2 className="font-serif text-4xl md:text-6xl text-primary mb-8 leading-tight drop-shadow-sm">
+               The Moments
+              </h2>
+              <div className="space-y-6">
+                 {[
+                   "eppovum happy ah irunga with that smile 😊",
+                 ].map((line, i) => (
+                   <motion.p
+                     key={i}
+                     initial={{ opacity: 0, x: 20 }}
+                     whileInView={{ opacity: 1, x: 0 }}
+                     viewport={{ once: true }}
+                     transition={{ duration: 1, delay: 0.8 + i * 0.4 }}
+                     className="text-xl md:text-2xl font-light text-foreground/80 italic font-serif tracking-wide leading-relaxed"
+                   >
+                     {line}
+                   </motion.p>
+                 ))}
               </div>
-              <h3 className="text-3xl font-serif text-foreground mb-4">{item.title}</h3>
-              <p className="text-lg text-foreground/70 font-light leading-relaxed">
-                {item.desc}
-              </p>
-            </motion.div>
-          ))}
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                whileInView={{ opacity: 1, width: 100 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, delay: 2 }}
+                className="h-px bg-gradient-to-r from-primary/60 to-transparent mt-12 mx-auto md:mx-0"
+              />
+            </FadeIn>
+          </div>
+
         </div>
       </Section>
+
 
       {/* 5. Visual Break - Cake Image */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden my-32">
@@ -244,11 +205,6 @@ export default function BirthdayPage() {
           <img src="/cake.png" alt="Birthday Cake" className="w-full h-full object-cover opacity-40 mix-blend-luminosity" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background" />
         </div>
-        <FadeIn className="relative z-10 text-center px-6">
-          <p className="font-serif text-4xl md:text-6xl text-primary drop-shadow-md">
-            "Count your life by smiles, not tears. Count your age by friends, not years."
-          </p>
-        </FadeIn>
       </section>
 
       {/* 6. Interactive Cake & Wish Section */}
@@ -258,7 +214,7 @@ export default function BirthdayPage() {
             <h2 className="font-serif text-6xl md:text-8xl text-accent mb-6">
               Make a wish
             </h2>
-            <p className="text-xl md:text-2xl font-light text-foreground/70 mb-16">
+            <p className="text-xl md:text-2xl font-light text-foreground/20 mb-6">
               Close your eyes. Hold the moment. Then let it go.
             </p>
           </FadeIn>
@@ -299,19 +255,18 @@ export default function BirthdayPage() {
             <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
             
             <p className="font-serif text-4xl md:text-5xl text-foreground mb-10 leading-relaxed text-primary">
-              Dearest,
+              hey Gopiha
             </p>
             <div className="space-y-8 text-xl md:text-2xl font-light text-foreground/80 leading-relaxed">
               <p>
-                I hope today feels as special as you are. I hope you feel surrounded by love, 
-                held by peace, and excited for what's to come.
+                As you step into another year of your life, I just want you to remember one thing — everything is going to change, and it’s going to change very beautifully.
               </p>
               <p>
-                You deserve a year filled with unexpected joys, deep belly laughs, quiet moments 
-                of immense gratitude, and dreams realized. 
+                unnga dreams laam big. i wish you will achieve in life as what you've imagined ,
+               eppovum romba santhosham ahm irunga with all your beautiful smile .
               </p>
               <p className="font-medium text-foreground">
-                Thank you for existing. Happy Birthday.
+                Happy Birthday Gopiha.
               </p>
             </div>
             
@@ -322,8 +277,7 @@ export default function BirthdayPage() {
               transition={{ delay: 1.5, duration: 1.5 }}
               className="mt-16 pt-10 border-t border-primary/15 flex items-center justify-end gap-4"
             >
-              <span className="font-serif text-3xl text-primary">With all my love</span>
-              <Heart className="text-accent w-8 h-8 fill-accent/20 animate-pulse" />
+              <span className="font-serif text-3xl text-primary">Best birthday wishes to you</span>
             </motion.div>
           </div>
         </FadeIn>
