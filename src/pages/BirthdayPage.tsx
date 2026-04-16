@@ -8,11 +8,13 @@ const Particles = () => {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
   
   useEffect(() => {
-    const newParticles = Array.from({ length: 50 }).map((_, i) => ({
+    // Fewer particles for background on mobile
+    const count = window.innerWidth < 768 ? 20 : 50;
+    const newParticles = Array.from({ length: count }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 4 + 1,
+      size: Math.random() * 3 + 1,
       delay: Math.random() * 5,
       duration: Math.random() * 10 + 10
     }));
@@ -24,18 +26,18 @@ const Particles = () => {
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full bg-primary/30"
+          className="absolute rounded-full bg-primary/20 backdrop-blur-[1px]"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            boxShadow: '0 0 10px 2px rgba(255, 182, 193, 0.4)'
+            boxShadow: '0 0 10px 1px rgba(255, 182, 193, 0.2)'
           }}
           animate={{
             y: ['0vh', '-100vh'],
-            x: ['0vw', `${Math.random() * 20 - 10}vw`],
-            opacity: [0, 0.8, 0],
+            x: ['0vw', `${Math.random() * 10 - 5}vw`],
+            opacity: [0, 0.6, 0],
           }}
           transition={{
             duration: p.duration,
@@ -50,8 +52,8 @@ const Particles = () => {
 };
 
 const Section = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <section className={`relative min-h-screen flex items-center justify-center py-32 px-6 ${className}`}>
-    <div className="max-w-4xl mx-auto z-10 relative w-full">
+  <section className={`relative min-h-screen flex items-center justify-center py-20 md:py-32 px-4 md:px-6 ${className}`}>
+    <div className="max-w-6xl mx-auto z-10 relative w-full">
       {children}
     </div>
   </section>
@@ -59,10 +61,10 @@ const Section = ({ children, className = "" }: { children: React.ReactNode, clas
 
 const FadeIn = ({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) => (
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
+    initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-10%" }}
-    transition={{ duration: 1, delay, ease: [0.22, 1, 0.36, 1] }}
+    viewport={{ once: true, margin: "-5%" }}
+    transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
     className={className}
   >
     {children}
@@ -70,6 +72,15 @@ const FadeIn = ({ children, delay = 0, className = "" }: { children: React.React
 );
 
 export default function BirthdayPage() {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
@@ -81,89 +92,85 @@ export default function BirthdayPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
       <Particles />
       
-      {/* 1. Chandelier Hero Section (Replaces Old Hero) */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020617]">
+      {/* 1. Chandelier Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020617] touch-pan-y">
         <ChandelierHero name="Gopiha" />
         
-        {/* Ambient Glows */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 6 }}
+          transition={{ duration: 1, delay: 5 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center text-primary/40 gap-4"
         >
-          <span className="text-xs tracking-[0.4em] uppercase font-light">Continue the Journey</span>
+          <span className="text-[10px] tracking-[0.4em] uppercase font-light">Scroll to explore</span>
           <motion.div 
             animate={{ y: [0, 8, 0] }} 
             transition={{ repeat: Infinity, duration: 2 }}
-            className="w-px h-12 bg-gradient-to-b from-primary/60 to-transparent" 
+            className="w-px h-10 bg-gradient-to-b from-primary/60 to-transparent" 
           />
         </motion.div>
       </section>
 
-
-      {/* 3. Memory Lane Section (Replaces Timeline) */}
-      <Section className="overflow-hidden">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-24">
+      {/* 3. Memory Lane Section */}
+      <Section className="overflow-hidden md:py-40">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-16 md:gap-32">
           
-          {/* Memory Lane: Personalized Polaroid Collage */}
-          <div className="relative w-full md:w-1/2 h-[600px] md:h-[800px] flex items-center justify-center">
+          {/* Memory Lane Collage */}
+          <div className="relative w-full md:w-1/2 h-[450px] md:h-[700px] flex items-center justify-center touch-pan-y">
             {[
-              { src: "/pics/memory-1.jpeg", rot: -15, x: -90, y: -100, scale: 1 },
-              { src: "/pics/memory-2.jpeg", rot: 12, x: 80, y: -120, scale: 1.05 },
-              { src: "/pics/memory-3.jpeg", rot: -8, x: -70, y: 100, scale: 1.1 },
-              { src: "/pics/memory-4.jpeg", rot: 18, x: 90, y: 80, scale: 0.95 },
-              { src: "/pics/memory-5.jpeg", rot: -2, x: 0, y: 0, scale: 1.25, isFront: true },
+              { src: "/pics/memory-1.jpeg", rot: -12, x: isMobile ? -40 : -90, y: isMobile ? -60 : -100, scale: 0.9 },
+              { src: "/pics/memory-2.jpeg", rot: 10, x: isMobile ? 50 : 80, y: isMobile ? -80 : -120, scale: 0.95 },
+              { src: "/pics/memory-3.jpeg", rot: -6, x: isMobile ? -50 : -70, y: isMobile ? 70 : 100, scale: 1 },
+              { src: "/pics/memory-4.jpeg", rot: 15, x: isMobile ? 60 : 90, y: isMobile ? 60 : 80, scale: 0.9 },
+              { src: "/pics/memory-5.jpeg", rot: -2, x: 0, y: 0, scale: 1.15, isFront: true },
             ].map((img, i) => (
               <motion.div
                 key={i}
                 drag
-                dragConstraints={{ left: -150, right: 150, top: -200, bottom: 200 }}
-                dragElastic={0.25}
-                initial={{ opacity: 0, scale: 0.4, x: img.x * 2.5, y: img.y * 2.5, rotate: img.rot * 3 }}
-                whileInView={{ opacity: 1, scale: img.scale || 1, x: img.x, y: img.y, rotate: img.rot }}
-                viewport={{ once: true }}
-                transition={{ 
-                  duration: 1.5, 
-                  delay: i * 0.15, 
-                  type: 'spring', 
-                  damping: 18, 
-                  stiffness: 70 
-                }}
-                whileHover={{ 
-                  scale: 1.15, 
-                  rotate: 0, 
-                  zIndex: 100, 
-                  boxShadow: '0 30px 60px rgba(0,0,0,0.5)',
-                  transition: { duration: 0.3 } 
-                }}
-                whileTap={{ scale: 0.95, zIndex: 100 }}
-                className="absolute p-3 pb-10 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] border border-white/20 cursor-grab active:cursor-grabbing group overflow-hidden"
+                dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                dragElastic={0.1}
+                // touch-action: pan-y allows background scrolling while over the card
+                className="absolute p-2 md:p-3 pb-8 md:pb-10 bg-white shadow-xl border border-white/20 cursor-grab active:cursor-grabbing group select-none touch-pan-y"
                 style={{ 
                   zIndex: img.isFront ? 10 : i + 1,
-                  width: 'min(260px, 60%)',
+                  width: isMobile ? '160px' : '240px',
+                  x: img.x,
+                  y: img.y,
+                  rotate: img.rot,
+                }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: img.scale }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 1.2, 
+                  delay: i * 0.1,
+                  type: 'spring',
+                  damping: 20
+                }}
+                whileHover={{ 
+                  scale: 1.1,
+                  rotate: 0,
+                  zIndex: 50,
+                  transition: { duration: 0.2 }
                 }}
               >
-                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100/50 mb-3">
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 pointer-events-none mb-2 md:mb-3">
                   <img 
                     src={img.src} 
                     alt={`Memory ${i}`} 
-                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
+                    className="w-full h-full object-contain"
                   />
-                  <div className="absolute inset-0 bg-primary/5 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="flex justify-center items-center opacity-20">
-                  <div className="w-8 h-1 bg-gray-300 rounded-full" />
+                <div className="flex justify-center items-center opacity-10">
+                  <div className="w-6 h-1 bg-gray-400 rounded-full" />
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Right Side: Emotional Text */}
           <div className="w-full md:w-1/2 text-center md:text-left md:pl-20">
             <FadeIn>
               <h2 className="font-serif text-4xl md:text-6xl text-primary mb-8 leading-tight drop-shadow-sm">

@@ -25,22 +25,48 @@ export default function ChandelierHero({ name = "Gopiha" }) {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
+    let particleSprite: HTMLCanvasElement | null = null;
     const text = `Happy Birthday ${name}`;
+
+    const createParticleSprite = (size: number) => {
+      const sprite = document.createElement('canvas');
+      const sSize = size * 10;
+      sprite.width = sSize;
+      sprite.height = sSize;
+      const sCtx = sprite.getContext('2d')!;
+      
+      const grad = sCtx.createRadialGradient(sSize/2, sSize/2, 0, sSize/2, sSize/2, sSize/2);
+      grad.addColorStop(0, 'rgba(251, 191, 36, 0.8)');
+      grad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      
+      sCtx.fillStyle = grad;
+      sCtx.beginPath();
+      sCtx.arc(sSize/2, sSize/2, sSize/2, 0, Math.PI * 2);
+      sCtx.fill();
+      
+      sCtx.fillStyle = 'rgba(255, 255, 255, 1)';
+      sCtx.beginPath();
+      sCtx.arc(sSize/2, sSize/2, size * 0.7, 0, Math.PI * 2);
+      sCtx.fill();
+      
+      return sprite;
+    };
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      particleSprite = createParticleSprite(2); // Base size for spirit
       init();
     };
 
     const init = () => {
       particles = [];
-      const fontSize = window.innerWidth > 768 ? 100 : 45;
+      const isMobile = window.innerWidth < 768;
+      const fontSize = isMobile ? Math.min(window.innerWidth * 0.12, 45) : Math.min(window.innerWidth * 0.08, 100);
       ctx.font = `600 ${fontSize}px serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
-      // Temporary canvas to get text positions
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d')!;
       tempCanvas.width = canvas.width;
@@ -52,7 +78,7 @@ export default function ChandelierHero({ name = "Gopiha" }) {
       tempCtx.fillText(text, canvas.width / 2, canvas.height / 2);
 
       const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height).data;
-      const step = 5; // Higher density for much clearer text visibility
+      const step = isMobile ? 8 : 5; // Reduced density on mobile for performance
 
       for (let y = 0; y < canvas.height; y += step) {
         for (let x = 0; x < canvas.width; x += step) {
@@ -65,11 +91,11 @@ export default function ChandelierHero({ name = "Gopiha" }) {
               targetY: y,
               vx: 0,
               vy: 0,
-              size: Math.random() * 2 + 1.5, // Slightly larger particles
+              size: isMobile ? 1.5 : Math.random() * 2 + 1.5,
               alpha: 0,
-              delay: Math.random() * 80, // Reduced delay for faster initial visibility
+              delay: Math.random() * (isMobile ? 40 : 80),
               flicker: Math.random() * 0.1,
-              hasString: Math.random() < 0.18 // Slightly more strings
+              hasString: Math.random() < (isMobile ? 0.1 : 0.18)
             });
           }
         }
@@ -79,8 +105,8 @@ export default function ChandelierHero({ name = "Gopiha" }) {
     const draw = (time: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      const friction = 0.94; // Optimized friction
-      const ease = 0.04; // Faster easing for clearer formation
+      const friction = 0.94;
+      const ease = 0.04;
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -101,36 +127,26 @@ export default function ChandelierHero({ name = "Gopiha" }) {
         p.x += p.vx;
         p.y += p.vy;
         
-        if (p.alpha < 1) p.alpha += 0.02; // Faster fade-in
+        if (p.alpha < 1) p.alpha += 0.02;
 
         const flicker = Math.sin(time * 0.01 + i) * 0.2 + 0.8;
         
-        // Draw String - Only for selected particles
         if (p.hasString) {
           ctx.beginPath();
           ctx.moveTo(p.x, 0);
           ctx.lineTo(p.x, p.y);
-          // Boosted string visibility
-          ctx.strokeStyle = `rgba(251, 191, 36, ${p.alpha * 0.25})`;
-          ctx.lineWidth = 0.8;
+          ctx.strokeStyle = `rgba(251, 191, 36, ${p.alpha * 0.15})`;
+          ctx.lineWidth = 0.5;
           ctx.stroke();
         }
 
-        // Golden glow - Enhanced
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
-        gradient.addColorStop(0, `rgba(251, 191, 36, ${p.alpha * flicker * 0.8})`);
-        gradient.addColorStop(1, 'rgba(251, 191, 36, 0)');
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        
-        // Solid core - Brighter
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 0.7, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-        ctx.fill();
+        if (particleSprite) {
+          ctx.globalAlpha = p.alpha * flicker;
+          const sSize = p.size * 10;
+          ctx.drawImage(particleSprite, p.x - sSize/2, p.y - sSize/2, sSize, sSize);
+        }
       }
+      ctx.globalAlpha = 1;
 
       animationFrameId = requestAnimationFrame(draw);
     };
