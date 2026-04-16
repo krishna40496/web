@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles, Star, Moon, Music, Coffee, Book } from 'lucide-react';
 import CakeSection from '@/components/CakeSection';
-import ChandelierHero from '@/components/ChandelierHero';
+import CelestialHero from '@/components/CelestialHero';
 
 const Particles = () => {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
@@ -92,9 +92,9 @@ export default function BirthdayPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
       <Particles />
       
-      {/* 1. Chandelier Hero Section */}
+      {/* 1. Cinematic Celestial Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020617] touch-pan-y">
-        <ChandelierHero name="Gopiha" />
+        <CelestialHero name="Gopiha" />
         
         <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
